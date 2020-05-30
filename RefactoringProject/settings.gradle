@@ -1,0 +1,2 @@
+rootProject.name='RefactoringProject'
+include ':app'
