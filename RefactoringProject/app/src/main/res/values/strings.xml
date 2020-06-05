@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RefactoringProject</string>
+    <string name="CLIENT_ID">LwD946_CTkmLURmzCdRA</string>
+    <string name="CLIENT_SECRET">VLVZLfhlUS</string>
 </resources>
