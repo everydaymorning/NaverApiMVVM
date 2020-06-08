@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">RefactoringProject</string>
-    <string name="CLIENT_ID">LwD946_CTkmLURmzCdRA</string>
-    <string name="CLIENT_SECRET">atpBqNlbZQ</string>
-    <string name="CLIENT_NAME">Naver Shopping</string>
 </resources>

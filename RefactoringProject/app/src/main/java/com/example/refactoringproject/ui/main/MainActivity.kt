@@ -1,7 +1,8 @@
-package com.example.refactoringproject
+package com.example.refactoringproject.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.refactoringproject.R
 
 class MainActivity : AppCompatActivity() {
 
