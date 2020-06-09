@@ -27,8 +27,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun init(){
         btn_naver_button.setOAuthLoginHandler(LoginManager)
-        btn_naver_button.setOnClickListener{
-            mLoginManager.startLoginActivity(this)
-        }
+
     }
 }

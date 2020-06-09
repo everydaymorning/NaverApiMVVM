@@ -2,7 +2,6 @@ package com.example.refactoringproject.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import android.provider.LiveFolders.INTENT
 import android.util.Log
 import com.example.refactoringproject.MyApplication
 import com.example.refactoringproject.constant.LoginConstant
@@ -47,14 +46,16 @@ object LoginManager: OAuthLoginHandler() {
         }
     }
 
-    private fun goLoginActivity(){
+    fun goLoginActivity(){
         val intent = Intent(mContext, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY
         mContext.startActivity(intent)
+
     }
 
     private fun goMainActivity(){
         val intent = Intent(mContext, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         mContext.startActivity(intent)
     }
 }
