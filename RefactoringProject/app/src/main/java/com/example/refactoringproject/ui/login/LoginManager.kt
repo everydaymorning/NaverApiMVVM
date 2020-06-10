@@ -41,6 +41,7 @@ object LoginManager: OAuthLoginHandler() {
         if(success){
             goMainActivity()
             Log.d("login", "로그인 성공")
+
         }else{
             Log.e("login", "로그인 실패")
         }
@@ -50,7 +51,6 @@ object LoginManager: OAuthLoginHandler() {
         val intent = Intent(mContext, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY
         mContext.startActivity(intent)
-
     }
 
     private fun goMainActivity(){
