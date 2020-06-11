@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.example.refactoringproject.R
 import com.example.refactoringproject.ui.login.LoginManager
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private val mLoginManager = LoginManager
@@ -13,8 +14,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -39,6 +40,5 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 
 }
