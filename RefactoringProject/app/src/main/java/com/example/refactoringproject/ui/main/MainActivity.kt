@@ -5,17 +5,20 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.example.refactoringproject.R
+import com.example.refactoringproject.ui.fragment.ShoppingListFragment
 import com.example.refactoringproject.ui.login.LoginManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private val mLoginManager = LoginManager
-
+    private val mShoppingListFragment = ShoppingListFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportFragmentManager.beginTransaction().add(R.id.frame_main, mShoppingListFragment).commit()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
