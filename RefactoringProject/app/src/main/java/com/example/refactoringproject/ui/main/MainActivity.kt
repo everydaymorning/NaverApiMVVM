@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportFragmentManager.beginTransaction().add(R.id.frame_main, mShoppingListFragment).commit()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
