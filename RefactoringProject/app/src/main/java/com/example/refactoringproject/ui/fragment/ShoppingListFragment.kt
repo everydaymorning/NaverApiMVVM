@@ -1,6 +1,7 @@
 package com.example.refactoringproject.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,12 @@ import com.example.refactoringproject.MyApplication
 import com.example.refactoringproject.R
 import com.example.refactoringproject.adapter.ShoppingAdapter
 import com.example.refactoringproject.data.Shopping
+import com.example.refactoringproject.network.RetrofitNetwork
 import kotlinx.android.synthetic.main.fragment_shopping_list.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,20 +48,27 @@ class ShoppingListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-        testData.add(Shopping("title", "test2", "test3", 1, "mallName", "test5", "test6"))
-
         return inflater.inflate(R.layout.fragment_shopping_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val retrofitNetwork = RetrofitNetwork
+        retrofitNetwork.create()
+            .getShoppingItem("조던", 20, 1, "sim")
+            .enqueue(object: Callback<Shopping> {
+                override fun onResponse(call: Call<Shopping>, response: Response<Shopping>) {
+                    if(response.isSuccessful){
+                        val body = response.body()
+                        Log.d("body", body.toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<Shopping>, t: Throwable) {
+                    Log.d("error", "retrofit error")
+                }
+            })
+
+
         rv_fragment.apply{
             layoutManager = LinearLayoutManager(mContext)
             adapter = ShoppingAdapter(testData)
