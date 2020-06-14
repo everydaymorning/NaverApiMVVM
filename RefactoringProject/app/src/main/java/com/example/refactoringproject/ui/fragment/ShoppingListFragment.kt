@@ -68,7 +68,6 @@ class ShoppingListFragment : Fragment() {
                 }
             })
 
-
         rv_fragment.apply{
             layoutManager = LinearLayoutManager(mContext)
             adapter = ShoppingAdapter(testData)

@@ -17,7 +17,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportFragmentManager.beginTransaction().add(R.id.frame_main, mShoppingListFragment).commit()
+
+        btn_search.setOnClickListener{
+            supportFragmentManager.beginTransaction().replace(R.id.frame_main, mShoppingListFragment).commit()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
