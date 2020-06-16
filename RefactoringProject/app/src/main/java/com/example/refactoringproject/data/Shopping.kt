@@ -9,3 +9,11 @@ data class Shopping(
     val maker: String,
     val brand: String
 )
+
+data class ShoppingItem(
+    val lastBuildDate: String,
+    val total: Int,
+    val start: Int,
+    val display: Int,
+    val items: List<Shopping>
+)
