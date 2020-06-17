@@ -29,23 +29,6 @@ interface RetrofitNetwork {
         private const val CLIENT_SECRET = "JCMvS1s13s"
 
         fun create(): RetrofitNetwork{
-            val httpLoggingInterceptor = HttpLoggingInterceptor()
-            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-
-            val headerInterceptor = Interceptor{
-                val request = it.request()
-                    .newBuilder()
-                    .addHeader("X-Naver-Client-Id", CLIENT_ID)
-                    .addHeader("X-Naver-Client-Secret", CLIENT_SECRET)
-                    .build()
-                return@Interceptor it.proceed(request)
-            }
-
-            val client = OkHttpClient.Builder()
-                .addInterceptor(headerInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build()
-
 
             return Retrofit.Builder()
                 .baseUrl(BASE_URL_API)

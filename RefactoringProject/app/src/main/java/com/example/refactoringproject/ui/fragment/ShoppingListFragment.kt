@@ -59,15 +59,8 @@ class ShoppingListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val title = arguments?.getString("title")
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL_API)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(RetrofitNetwork::class.java)
-        val callGetShoppingItem = api.getShoppingItem(CLIENT_ID, CLIENT_SECRET, title!!)
-
-        callGetShoppingItem.enqueue(
+        val retrofit = RetrofitNetwork.create().getShoppingItem(CLIENT_ID, CLIENT_SECRET, title!!)
+        retrofit.enqueue(
             object : Callback<ShoppingItem>{
                 override fun onResponse(
                     call: Call<ShoppingItem>,
@@ -93,10 +86,6 @@ class ShoppingListFragment : Fragment() {
                 }
             }
         )
-
-
-
-
     }
     companion object {
         /**
