@@ -11,6 +11,7 @@ import com.example.refactoringproject.MyApplication
 
 import com.example.refactoringproject.R
 import com.example.refactoringproject.adapter.ShoppingAdapter
+import com.example.refactoringproject.constant.ApiConstant
 import com.example.refactoringproject.data.Shopping
 import com.example.refactoringproject.data.ShoppingItem
 import com.example.refactoringproject.network.RetrofitNetwork
@@ -32,14 +33,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ShoppingListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private val BASE_URL_API = "https://openapi.naver.com/"
-    private val CLIENT_ID = "L0tYinrnwRaZ6DzIACHl"
-    private val CLIENT_SECRET = "JCMvS1s13s"
     private val mShoppingList: ArrayList<Shopping> = ArrayList()
     private var param1: String? = null
     private var param2: String? = null
-    val testData: ArrayList<Shopping> = ArrayList()
+
     private val mContext = MyApplication.applicationContext()
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -59,7 +56,7 @@ class ShoppingListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val title = arguments?.getString("title")
-        val retrofit = RetrofitNetwork.create().getShoppingItem(CLIENT_ID, CLIENT_SECRET, title!!)
+        val retrofit = RetrofitNetwork.create().getShoppingItem(ApiConstant.CLIENT_ID, ApiConstant.CLIENT_SECRET, title!!)
         retrofit.enqueue(
             object : Callback<ShoppingItem>{
                 override fun onResponse(
