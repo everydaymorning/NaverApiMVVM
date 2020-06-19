@@ -11,6 +11,7 @@ import com.example.refactoringproject.MyApplication
 
 import com.example.refactoringproject.R
 import com.example.refactoringproject.adapter.ShoppingAdapter
+import com.example.refactoringproject.constant.ApiConstant
 import com.example.refactoringproject.data.Shopping
 import com.example.refactoringproject.data.ShoppingItem
 import com.example.refactoringproject.network.RetrofitNetwork
@@ -32,15 +33,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ShoppingListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private val BASE_URL_API = "https://openapi.naver.com/"
-    private val CLIENT_ID = "L0tYinrnwRaZ6DzIACHl"
-    private val CLIENT_SECRET = "JCMvS1s13s"
-
+    private val mShoppingList: ArrayList<Shopping> = ArrayList()
     private var param1: String? = null
     private var param2: String? = null
-    val testData: ArrayList<Shopping> = ArrayList()
-    private lateinit var mShoppingAdapter: ShoppingAdapter
+
     private val mContext = MyApplication.applicationContext()
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -59,22 +55,9 @@ class ShoppingListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        testData.add(Shopping("test1","test1","test1", 1, "test1","test1","test1"))
-
-        rv_fragment.apply{
-            layoutManager = LinearLayoutManager(mContext)
-            adapter = ShoppingAdapter(testData)
-        }
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL_API)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(RetrofitNetwork::class.java)
-        val callGetShoppingItem = api.getShoppingItem(CLIENT_ID, CLIENT_SECRET, "조던")
-
-        callGetShoppingItem.enqueue(
+        val title = arguments?.getString("title")
+        val retrofit = RetrofitNetwork.create().getShoppingItem(ApiConstant.CLIENT_ID, ApiConstant.CLIENT_SECRET, title!!)
+        retrofit.enqueue(
             object : Callback<ShoppingItem>{
                 override fun onResponse(
                     call: Call<ShoppingItem>,
@@ -83,8 +66,13 @@ class ShoppingListFragment : Fragment() {
                     if(response.isSuccessful){
                         Log.d("retro", "success")
                         val body = response.body()
-                        Log.d("body", body.toString())
-
+                        for(i in body?.items!!){
+                            mShoppingList.add(Shopping(i.title, i.link, i.image, i.lprice, i.mallName, i.maker, i.brand))
+                        }
+                        rv_fragment.apply{
+                            layoutManager = LinearLayoutManager(mContext)
+                            adapter = ShoppingAdapter(mShoppingList)
+                        }
                     }else{
                         Log.d("retro error", "error")
                     }
@@ -95,10 +83,6 @@ class ShoppingListFragment : Fragment() {
                 }
             }
         )
-
-
-
-
     }
     companion object {
         /**

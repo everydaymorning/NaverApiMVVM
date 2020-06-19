@@ -17,17 +17,21 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     private val mLoginManager = LoginManager
-    private val mShoppingListFragment = ShoppingListFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        val title = edit_search.text
 
         btn_search.setOnClickListener{
-            supportFragmentManager.beginTransaction().replace(R.id.frame_main, mShoppingListFragment).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.frame_main,
+                ShoppingListFragment().apply{
+                arguments = Bundle().apply{
+                    putString("title", title.toString())
+                }
+            }).commit()
         }
-
 
     }
 
