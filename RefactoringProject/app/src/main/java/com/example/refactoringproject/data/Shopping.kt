@@ -1,5 +1,10 @@
 package com.example.refactoringproject.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
+
+@Parcelize
 data class Shopping(
     val title: String,
     val link: String,
@@ -8,7 +13,7 @@ data class Shopping(
     val mallName: String,
     val maker: String,
     val brand: String
-)
+): Parcelable
 
 data class ShoppingItem(
     val lastBuildDate: String,

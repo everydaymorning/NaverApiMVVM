@@ -12,7 +12,7 @@ import com.example.refactoringproject.R
 import com.example.refactoringproject.data.Shopping
 import kotlinx.android.synthetic.main.shopping_item.view.*
 
-class ShoppingAdapter(var shoppingList: ArrayList<Shopping>) : RecyclerView.Adapter<ShoppingAdapter.ItemViewHolder>() {
+class ShoppingAdapter(var shoppingList: ArrayList<Shopping>, val itemClick: (Shopping) -> Unit) : RecyclerView.Adapter<ShoppingAdapter.ItemViewHolder>() {
     private val mallName = "판매처: "
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -38,6 +38,10 @@ class ShoppingAdapter(var shoppingList: ArrayList<Shopping>) : RecyclerView.Adap
                 .apply(RequestOptions().override(200, 200))
                 .apply(RequestOptions().centerCrop())
                 .into(itemView.img_shopping)
+
+            itemView.setOnClickListener{
+                itemClick(shopping)
+            }
         }
     }
 }
