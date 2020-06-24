@@ -4,7 +4,10 @@
     <string name="withdrawal">회원탈퇴</string>
     <string name="app_title">Naver Shopping</string>
     <string name="search">검색</string>
-
+    <string name="title">제품명: %s</string>
+    <string name="price">최저가: %s원</string>
+    <string name="mallName">상호명: %s</string>
+    <string name="brand">브랜드: %s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
