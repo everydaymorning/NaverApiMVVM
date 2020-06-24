@@ -1,5 +1,6 @@
 package com.example.refactoringproject.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.refactoringproject.constant.ApiConstant
 import com.example.refactoringproject.data.Shopping
 import com.example.refactoringproject.data.ShoppingItem
 import com.example.refactoringproject.network.RetrofitNetwork
+import com.example.refactoringproject.ui.detail.DetailActivity
 import kotlinx.android.synthetic.main.fragment_shopping_list.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -71,7 +73,11 @@ class ShoppingListFragment : Fragment() {
                         }
                         rv_fragment.apply{
                             layoutManager = LinearLayoutManager(mContext)
-                            adapter = ShoppingAdapter(mShoppingList)
+                            adapter = ShoppingAdapter(mShoppingList) { shopping ->
+                                val intent = Intent(mContext, DetailActivity::class.java)
+                                intent.putExtra("shoppingItem", shopping)
+                                startActivity(intent)
+                            }
                         }
                     }else{
                         Log.d("retro error", "error")
