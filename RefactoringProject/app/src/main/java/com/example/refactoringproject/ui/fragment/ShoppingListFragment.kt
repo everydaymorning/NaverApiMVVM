@@ -89,8 +89,6 @@ class ShoppingListFragment : Fragment() {
                 }
             }
         )
-
-
     }
     companion object {
         /**

@@ -16,9 +16,15 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        init()
+    }
+
+    private fun init(){
         val shoppingItem = intent.getParcelableExtra<Shopping>("shoppingItem")
         txt_title_detail.text = "제품명: " + HtmlCompat.fromHtml(shoppingItem.title, HtmlCompat.FROM_HTML_MODE_LEGACY)
         txt_price_detail.text = "최저가: " + shoppingItem.lprice.toString() + "원"
+        txt_mallName_detail.text = "상호명: " + shoppingItem.mallName
+        txt_brand_detail.text = "브랜드: " + shoppingItem.brand
         Glide.with(applicationContext).load(shoppingItem.image)
             .apply(RequestOptions())
             .apply(RequestOptions().centerCrop())
@@ -29,5 +35,4 @@ class DetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
 }
