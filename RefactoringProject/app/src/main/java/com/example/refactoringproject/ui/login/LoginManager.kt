@@ -23,6 +23,7 @@ object LoginManager: OAuthLoginHandler() {
 
     fun getRefreshToken() = mNaverLoginInstance?.getRefreshToken(mContext)
 
+    fun getAccessToken() = mNaverLoginInstance.getAccessToken(mContext)
     fun startLoginActivity(activity: Activity){
         this.mActivity = activity
         mNaverLoginInstance?.startOauthLoginActivity(activity, this)

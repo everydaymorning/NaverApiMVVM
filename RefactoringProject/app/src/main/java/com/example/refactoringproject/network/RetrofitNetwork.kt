@@ -4,6 +4,7 @@ import com.example.refactoringproject.R
 import com.example.refactoringproject.constant.ApiConstant
 import com.example.refactoringproject.data.Shopping
 import com.example.refactoringproject.data.ShoppingItem
+import com.example.refactoringproject.data.UserProfile
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,10 +24,13 @@ interface RetrofitNetwork {
         @Query("query") query: String
     ): Call<ShoppingItem>
 
+    @GET("v1/nid/me")
+    fun getProfileData(
+        @Header("Authorization") token: String
+    ): Call<UserProfile>
 
     companion object{
         fun create(): RetrofitNetwork{
-
             return Retrofit.Builder()
                 .baseUrl(ApiConstant.BASE_URL_API)
                 .addConverterFactory(GsonConverterFactory.create())

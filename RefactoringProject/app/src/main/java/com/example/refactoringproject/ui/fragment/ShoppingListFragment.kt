@@ -24,9 +24,7 @@ import retrofit2.Response
 
 class ShoppingListFragment : Fragment() {
     private val mShoppingList: ArrayList<Shopping> = ArrayList()
-
     private val mContext = MyApplication.applicationContext()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,7 +42,6 @@ class ShoppingListFragment : Fragment() {
                     response: Response<ShoppingItem>
                 ) {
                     if(response.isSuccessful){
-                        Log.d("retro", "success")
                         val body = response.body()
                         for(i in body?.items!!){
                             mShoppingList.add(Shopping(i.title, i.link, i.image, i.lprice, i.mallName, i.maker, i.brand))
