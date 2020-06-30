@@ -27,19 +27,14 @@ class MainActivity : AppCompatActivity() {
         mToken = mLoginManager.getAccessToken()
 
         Log.d("Token", mToken)
-        val retrofit = RetrofitNetwork.create().getProfileData("Bearer " + mToken)
+        val retrofit = RetrofitNetwork.create().getProfileData("Bearer $mToken")
         retrofit.enqueue(
             object: Callback<UserProfile> {
                 override fun onResponse(
                     call: Call<UserProfile>,
                     response: Response<UserProfile>
                 ) {
-                    if(response.isSuccessful){
-                        val body = response.body()
-                        Log.d("UserId", body.toString())
-                    }else{
-                        Log.d("UserId", "error")
-                    }
+
                 }
 
                 override fun onFailure(call: Call<UserProfile>, t: Throwable) {
@@ -69,13 +64,11 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_logout -> {
                 mLoginManager.logout()
                 finish()
-                mLoginManager.goLoginActivity()
                 true
             }
             R.id.menu_withdrawal -> {
                 mLoginManager.logoutAndDeleteToken()
                 finish()
-                mLoginManager.goLoginActivity()
                 true
             }
             else -> super.onOptionsItemSelected(item)

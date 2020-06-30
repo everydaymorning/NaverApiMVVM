@@ -5,9 +5,14 @@ import android.content.Intent
 import android.util.Log
 import com.example.refactoringproject.MyApplication
 import com.example.refactoringproject.constant.LoginConstant
+import com.example.refactoringproject.data.UserProfile
+import com.example.refactoringproject.network.RetrofitNetwork
 import com.example.refactoringproject.ui.main.MainActivity
 import com.nhn.android.naverlogin.OAuthLogin
 import com.nhn.android.naverlogin.OAuthLoginHandler
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 object LoginManager: OAuthLoginHandler() {
     private val mContext = MyApplication.applicationContext()
@@ -26,7 +31,7 @@ object LoginManager: OAuthLoginHandler() {
     fun getAccessToken() = mNaverLoginInstance.getAccessToken(mContext)
     fun startLoginActivity(activity: Activity){
         this.mActivity = activity
-        mNaverLoginInstance?.startOauthLoginActivity(activity, this)
+        mNaverLoginInstance.startOauthLoginActivity(activity, this)
     }
     fun logout(){
         mNaverLoginInstance.logout(mContext)
@@ -40,7 +45,26 @@ object LoginManager: OAuthLoginHandler() {
 
     override fun run(success: Boolean) {
         if(success){
-            goMainActivity()
+            val token = mNaverLoginInstance.getAccessToken(mContext)
+            RetrofitNetwork.create().getProfileData("Bearer $token")
+                .enqueue(object: retrofit2.Callback<UserProfile>{
+                    override fun onResponse(
+                        call: Call<UserProfile>,
+                        response: Response<UserProfile>
+                    ) {
+                        if(response.isSuccessful){
+                            val body = response.body()
+                            Log.d("UserId", body.toString())
+                            goMainActivity()
+                        }else{
+                            Log.d("UserId", "error")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<UserProfile>, t: Throwable) {
+
+                    }
+                })
             Log.d("login", "로그인 성공")
 
         }else{
@@ -48,7 +72,7 @@ object LoginManager: OAuthLoginHandler() {
         }
     }
 
-    fun goLoginActivity(){
+    private fun goLoginActivity(){
         val intent = Intent(mContext, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY
         mContext.startActivity(intent)
