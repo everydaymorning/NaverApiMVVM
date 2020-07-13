@@ -5,19 +5,29 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.refactoringproject.MyApplication
 import com.example.refactoringproject.R
 import com.example.refactoringproject.data.UserProfile
+import com.example.refactoringproject.database.UserLog
+import com.example.refactoringproject.database.UserLogDAO
+import com.example.refactoringproject.database.UserLogDB
 import com.example.refactoringproject.network.RetrofitNetwork
 import com.example.refactoringproject.ui.fragment.ShoppingListFragment
 import com.example.refactoringproject.ui.login.LoginManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     private val mLoginManager = LoginManager
-    lateinit var mToken: String
+    private lateinit var mToken: String
+    private val userLogDao by lazy {UserLogDB.getInstance(this).getUserLogDAO()}
+    private lateinit var id: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -34,7 +44,10 @@ class MainActivity : AppCompatActivity() {
                     call: Call<UserProfile>,
                     response: Response<UserProfile>
                 ) {
-
+                    if(response.isSuccessful){
+                        id = response.body()?.response?.id.toString()
+                        Log.d("userId", id)
+                    }
                 }
 
                 override fun onFailure(call: Call<UserProfile>, t: Throwable) {
@@ -51,6 +64,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }).commit()
 
+            CoroutineScope(Dispatchers.IO).launch {
+                userLogDao.insert(UserLog(userId = id,
+                    log = title.toString()))
+            }
         }
     }
 
