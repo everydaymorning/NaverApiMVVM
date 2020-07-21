@@ -34,6 +34,7 @@ class ShoppingListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val title = arguments?.getString("title")
+        Log.d("frag_title", title.toString())
         val retrofit = RetrofitNetwork.create().getShoppingItem(ApiConstant.CLIENT_ID, ApiConstant.CLIENT_SECRET, title!!)
         retrofit.enqueue(
             object : Callback<ShoppingItem>{
@@ -55,7 +56,7 @@ class ShoppingListFragment : Fragment() {
                             }
                         }
                     }else{
-                        Log.d("retro error", "error")
+                        Log.d("retro error", response.errorBody().toString())
                     }
                 }
 

@@ -5,20 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import com.example.refactoringproject.MyApplication
 import com.example.refactoringproject.R
 import com.example.refactoringproject.data.UserProfile
 import com.example.refactoringproject.database.UserLog
-import com.example.refactoringproject.database.UserLogDAO
 import com.example.refactoringproject.database.UserLogDB
 import com.example.refactoringproject.network.RetrofitNetwork
 import com.example.refactoringproject.ui.fragment.ShoppingListFragment
 import com.example.refactoringproject.ui.login.LoginManager
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,15 +24,14 @@ class MainActivity : AppCompatActivity() {
     private val mLoginManager = LoginManager
     private lateinit var mToken: String
     private val userLogDao by lazy {UserLogDB.getInstance(this).getUserLogDAO()}
-    private lateinit var id: String
+    private lateinit var getRecentLog: List<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        val title = edit_search.text
         mToken = mLoginManager.getAccessToken()
-
         Log.d("Token", mToken)
         val retrofit = RetrofitNetwork.create().getProfileData("Bearer $mToken")
         retrofit.enqueue(
@@ -45,8 +41,46 @@ class MainActivity : AppCompatActivity() {
                     response: Response<UserProfile>
                 ) {
                     if(response.isSuccessful){
-                        id = response.body()?.response?.id.toString()
-                        Log.d("userId", id)
+                        userId = response.body()?.response?.id.toString()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            getRecentLog = userLogDao.getRecentLog(userId!!)
+                            Log.d("asdfa", getRecentLog.toString())
+                        }
+                        Log.d("userId", userId)
+                        edit_search.setAdapter(ArrayAdapter(MyApplication.applicationContext(), android.R.layout.simple_dropdown_item_1line, getRecentLog))
+
+                        btn_search.setOnClickListener{
+                            Log.d("title", edit_search.text.toString())
+                            val title = edit_search.text.toString()
+                            var isDuplicated = false
+                            supportFragmentManager.beginTransaction().replace(R.id.frame_main,
+                                ShoppingListFragment().apply{
+                                    arguments = Bundle().apply{
+                                        putString("title", title)
+                                    }
+                                }).commit()
+
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val history = userLogDao.getAll(userId!!)
+                                Log.d("history", history.toString())
+                                if(history.contains(title)){
+                                    isDuplicated = true
+                                }
+                                if(!isDuplicated) {
+                                    userLogDao.insert(
+                                        UserLog(
+                                            userId = userId,
+                                            log = title
+                                        )
+                                    )
+                                }
+                            }
+
+
+                        }
+
+
+
                     }
                 }
 
@@ -56,19 +90,6 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        btn_search.setOnClickListener{
-            supportFragmentManager.beginTransaction().replace(R.id.frame_main,
-                ShoppingListFragment().apply{
-                arguments = Bundle().apply{
-                    putString("title", title.toString())
-                }
-            }).commit()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                userLogDao.insert(UserLog(userId = id,
-                    log = title.toString()))
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -85,11 +106,19 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_withdrawal -> {
                 mLoginManager.logoutAndDeleteToken()
+                CoroutineScope(Dispatchers.IO).launch {
+                    userLogDao.deleteLog(userId!!)
+                }
                 finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    companion object{
+        var userId: String?= null
+    }
+
 
 }
