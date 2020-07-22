@@ -1,5 +1,6 @@
 package com.example.refactoringproject.ui.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import com.example.refactoringproject.database.UserLogDB
 import com.example.refactoringproject.network.RetrofitNetwork
 import com.example.refactoringproject.ui.fragment.ShoppingListFragment
 import com.example.refactoringproject.ui.login.LoginManager
+import com.example.refactoringproject.ui.search.SearchActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -22,17 +24,11 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     private val mLoginManager = LoginManager
-    private lateinit var mToken: String
+    private val mToken: String by lazy {mLoginManager.getAccessToken()}
     private val userLogDao by lazy {UserLogDB.getInstance(this).getUserLogDAO()}
-    private lateinit var getRecentLog: List<String>
+    private lateinit var userId: String
+    init{
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        mToken = mLoginManager.getAccessToken()
-        Log.d("Token", mToken)
         val retrofit = RetrofitNetwork.create().getProfileData("Bearer $mToken")
         retrofit.enqueue(
             object: Callback<UserProfile> {
@@ -42,12 +38,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     if(response.isSuccessful){
                         userId = response.body()?.response?.id.toString()
-                        CoroutineScope(Dispatchers.IO).launch {
-                            getRecentLog = userLogDao.getRecentLog(userId!!)
-                            Log.d("asdfa", getRecentLog.toString())
-                        }
                         Log.d("userId", userId)
-                        edit_search.setAdapter(ArrayAdapter(MyApplication.applicationContext(), android.R.layout.simple_dropdown_item_1line, getRecentLog))
 
                         btn_search.setOnClickListener{
                             Log.d("title", edit_search.text.toString())
@@ -59,9 +50,8 @@ class MainActivity : AppCompatActivity() {
                                         putString("title", title)
                                     }
                                 }).commit()
-
                             CoroutineScope(Dispatchers.IO).launch {
-                                val history = userLogDao.getAll(userId!!)
+                                val history = userLogDao.getAll(userId)
                                 Log.d("history", history.toString())
                                 if(history.contains(title)){
                                     isDuplicated = true
@@ -75,12 +65,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-
-
                         }
-
-
-
                     }
                 }
 
@@ -89,6 +74,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        Log.d("Token", mToken)
+
+        edit_search.setOnClickListener{
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.putExtra("userId", userId)
+            startActivity(intent)
+        }
+
+
 
     }
 
@@ -114,10 +114,6 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    companion object{
-        var userId: String?= null
     }
 
 

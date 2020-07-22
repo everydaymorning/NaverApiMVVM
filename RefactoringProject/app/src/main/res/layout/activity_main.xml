@@ -31,15 +31,14 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_below="@id/toolbar">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/edit_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:completionThreshold="1"
-            android:completionHint="검색어를 입력해주세요.">
+            android:hint="검색어를 입력해주세요.">
 
-        </AutoCompleteTextView>
+        </EditText>
 
         <Button
             android:id="@+id/btn_search"
