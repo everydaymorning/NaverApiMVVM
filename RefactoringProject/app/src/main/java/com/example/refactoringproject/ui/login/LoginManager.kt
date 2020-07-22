@@ -53,8 +53,6 @@ object LoginManager: OAuthLoginHandler() {
                         response: Response<UserProfile>
                     ) {
                         if(response.isSuccessful){
-                            val body = response.body()
-                            Log.d("UserId", body.toString())
                             goMainActivity()
                         }else{
                             Log.d("UserId", "error")
