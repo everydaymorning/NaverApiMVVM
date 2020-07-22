@@ -1,12 +1,12 @@
 package com.example.refactoringproject.ui.main
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import com.example.refactoringproject.MyApplication
 import com.example.refactoringproject.R
 import com.example.refactoringproject.data.UserProfile
@@ -83,9 +83,12 @@ class MainActivity : AppCompatActivity() {
         Log.d("Token", mToken)
 
         edit_search.setOnClickListener{
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.putExtra("userId", userId)
-            startActivity(intent)
+            CoroutineScope(Dispatchers.IO).launch {
+                val recentLog = userLogDao.getRecentLog(userId)
+                val intent = Intent(MyApplication.applicationContext(), SearchActivity::class.java)
+                intent.putStringArrayListExtra("recentLog", recentLog as ArrayList<String>)
+                startActivityForResult(intent, 100)
+            }
         }
 
 
@@ -107,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_withdrawal -> {
                 mLoginManager.logoutAndDeleteToken()
                 CoroutineScope(Dispatchers.IO).launch {
-                    userLogDao.deleteLog(userId!!)
+                    userLogDao.deleteLog(userId)
                 }
                 finish()
                 true
@@ -116,5 +119,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                100 -> {
+                    edit_search.setText(data?.getStringExtra("search").toString())
+                }
+                else -> {
+                    edit_search.setText("")
+                }
+            }
+        }
+    }
 
 }
